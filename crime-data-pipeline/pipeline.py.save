@@ -1,0 +1,39 @@
+import subprocess
+
+BUCKET = "crime-data-delhi-ananya"
+
+def run_step(name, cmd):
+    print(f"\n🚀 {name}")
+    result = subprocess.run(cmd, shell=True)
+
+    if result.returncode != 0:
+        print(f"❌ Failed: {name}")
+        exit(1)
+    else:
+        print(f"✅ {name} completed")
+
+def main():
+    print("🔥 STARTING CLOUD DATA PIPELINE 🔥")
+
+    # Step 1: Scraping
+    run_step("Scraping Data", "python scraper/scraper.py")
+
+    # Step 2: Upload RAW
+    run_step(
+        "Upload RAW to Cloud",
+        f"gcloud storage cp data/raw/crime_news.csv gs://{BUCKET}/raw/"
+    )
+
+    # Step 3: Processing
+    run_step("Cleaning Data", "python processing/clean_data.py")
+    run_step("Geocoding", "python processing/geocode.py")
+    run_step("Safety Scoring", "python processing/safety_score.py")
+
+    # Step 4: Upload Processed
+    run_step(
+        "Upload Processed Data",
+        f"gcloud storage cp data/processed/final_data.csv gs://{BUCKET}/processed/"
+    )
+
+    print("\n🎉 PIPELINE COMPLETED SUCCESSFULLY!"__ == "__main__":
+    main()
