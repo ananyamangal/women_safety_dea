@@ -1,0 +1,6 @@
+pandas
+requests
+google-cloud-storage
+google-cloud-bigquery
+beautifulsoup4
+feedparser
